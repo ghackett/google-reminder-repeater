@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.episode6.typed2.sampleapp.ui.theme
+package com.ghackett.googlereminderrepeater.app.ui.theme
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
@@ -11,10 +11,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import com.episode6.typed2.sampleapp.R
-import com.episode6.typed2.sampleapp.nav.GoUpNavigator
+import com.ghackett.googlereminderrepeater.app.R
 
 @Composable fun AppScaffold(
   title: String = stringResource(id = R.string.app_name),
@@ -58,6 +56,7 @@ import com.episode6.typed2.sampleapp.nav.GoUpNavigator
   }
 }
 
-@Composable fun BackButton(goUpNavigator: GoUpNavigator, tint: Color = MaterialTheme.colorScheme.onPrimary) = IconButton(onClick = goUpNavigator::go) {
-  Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Go Back", tint = tint)
-}
+@Composable fun BackButton(goUpNavigator: () -> Unit, tint: Color = MaterialTheme.colorScheme.onPrimary) =
+  IconButton(onClick = goUpNavigator) {
+    Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = stringResource(R.string.go_back), tint = tint)
+  }

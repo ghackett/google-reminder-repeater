@@ -1,4 +1,4 @@
-package com.episode6.typed2.sampleapp.ui.theme
+package com.ghackett.googlereminderrepeater.app.ui.theme
 import androidx.compose.ui.graphics.Color
 
 val md_theme_light_primary = Color(0xFF2F5DA8)

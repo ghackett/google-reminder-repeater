@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">Typed2 Sample App</string>
+    <string name="app_name">Google Reminder Repeater</string>
+    <string name="go_back">Go Back</string>
 </resources>
