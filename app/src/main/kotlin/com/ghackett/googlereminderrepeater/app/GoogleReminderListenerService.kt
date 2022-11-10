@@ -2,6 +2,7 @@ package com.ghackett.googlereminderrepeater.app
 
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
+import com.ghackett.googlereminderrepeater.app.notifications.NotificationRepeater
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
