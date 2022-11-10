@@ -16,6 +16,7 @@ object GoogleRepeatChannel : NotificationChannelInfo {
   override val id = "GoogleRepeat"
   override val name = "Google Repeater Notification"
   override val description = "Repeated notifications from the google app"
+  override val importance = NotificationManager.IMPORTANCE_HIGH
 }
 
 fun NotificationManager.buildNotification(context: Context, info: NotificationChannelInfo): NotificationCompat.Builder {
