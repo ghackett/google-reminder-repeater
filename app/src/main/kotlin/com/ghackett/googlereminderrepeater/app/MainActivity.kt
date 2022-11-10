@@ -1,6 +1,7 @@
 package com.ghackett.googlereminderrepeater.app
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.ComponentActivity
@@ -28,24 +29,34 @@ import dagger.hilt.android.AndroidEntryPoint
           horizontalAlignment = Alignment.CenterHorizontally,
           modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
         ) {
-          Button(onClick = ::launchNotificationAccessScreen) {
+          Button(onClick = ::launchNotificationListenerPermissionsScreen) {
             Text(text = "Notification Listener Permission")
           }
-          Button(onClick = ::launchNotificationPermissionScreen) {
+          Button(onClick = ::launchNotificationSettingsScreen) {
             Text(text = "App Notification Settings")
+          }
+          Button(onClick = ::launchAppDetailsScreen) {
+            Text(text = "App Details")
           }
         }
       }
     }
   }
 
-  private fun launchNotificationAccessScreen() {
+  private fun launchNotificationListenerPermissionsScreen() {
     startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
   }
 
-  private fun launchNotificationPermissionScreen() {
+  private fun launchNotificationSettingsScreen() {
     startActivity(Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
       putExtra(Settings.EXTRA_APP_PACKAGE, this@MainActivity.packageName)
+    })
+  }
+
+  private fun launchAppDetailsScreen() {
+    startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+      putExtra(Settings.EXTRA_APP_PACKAGE, this@MainActivity.packageName)
+      data = Uri.parse("package:${this@MainActivity.packageName}")
     })
   }
 }
