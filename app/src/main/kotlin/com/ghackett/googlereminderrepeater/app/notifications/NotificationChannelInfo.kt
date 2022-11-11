@@ -1,9 +1,6 @@
 package com.ghackett.googlereminderrepeater.app.notifications
 
-import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.Context
-import androidx.core.app.NotificationCompat
 
 sealed interface NotificationChannelInfo {
   val id: String
@@ -17,13 +14,4 @@ object GoogleRepeatChannel : NotificationChannelInfo {
   override val name = "Google Repeater Notification"
   override val description = "Repeated notifications from the google app"
   override val importance = NotificationManager.IMPORTANCE_HIGH
-}
-
-fun NotificationManager.buildNotification(context: Context, info: NotificationChannelInfo): NotificationCompat.Builder {
-  if (getNotificationChannel(info.id) == null) {
-    createNotificationChannel(NotificationChannel(info.id, info.name, info.importance).apply {
-      description = info.description
-    })
-  }
-  return NotificationCompat.Builder(context, info.id)
 }
