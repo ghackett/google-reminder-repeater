@@ -1,6 +1,5 @@
 package com.ghackett.googlereminderrepeater.app.notifications
 
-import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -11,24 +10,20 @@ import javax.inject.Inject
 
 class Notifier @Inject constructor(
   private val notificationManager: NotificationManager,
-  @ApplicationContext val appContext: Context,
+  @ApplicationContext private val appContext: Context,
 ) {
-  fun notify(channel: NotificationChannelInfo, id: Int, notification: Notification) {
+
+  fun notify(channel: NotificationChannelInfo, id: Int, action: NotificationCompat.Builder.(Resources) -> Unit) {
     notificationManager.run {
       prep(channel)
-      notify(id, notification)
+      notify(
+        id,
+        NotificationCompat.Builder(appContext, channel.id)
+          .apply { action(appContext.resources) }
+          .build()
+      )
     }
   }
-}
-
-inline fun Notifier.notify(channel: NotificationChannelInfo, id: Int, action: NotificationCompat.Builder.(Resources) -> Unit) {
-  notify(
-    channel = channel,
-    id = id,
-    notification = NotificationCompat.Builder(appContext, channel.id)
-      .apply { action(appContext.resources) }
-      .build()
-  )
 }
 
 private fun NotificationManager.prep(channel: NotificationChannelInfo) {

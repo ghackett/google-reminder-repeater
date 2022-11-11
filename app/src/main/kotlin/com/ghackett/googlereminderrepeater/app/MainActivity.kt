@@ -18,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.ghackett.googlereminderrepeater.app.notifications.GoogleRepeatChannel
 import com.ghackett.googlereminderrepeater.app.notifications.Notifier
-import com.ghackett.googlereminderrepeater.app.notifications.notify
 import com.ghackett.googlereminderrepeater.app.ui.theme.AppScaffold
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
