@@ -1,6 +1,5 @@
 package com.ghackett.googlereminderrepeater.app
 
-import android.app.Notification
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -16,7 +15,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.ghackett.googlereminderrepeater.app.notifications.GoogleRepeatChannel
 import com.ghackett.googlereminderrepeater.app.notifications.Notifier
 import com.ghackett.googlereminderrepeater.app.ui.theme.AppScaffold
 import dagger.hilt.android.AndroidEntryPoint
@@ -71,10 +69,8 @@ import javax.inject.Inject
     })
   }
 
-  private fun sendTestNotification() = notifier.notify(GoogleRepeatChannel, 123) {
-    setSmallIcon(R.drawable.ic_launcher_foreground)
-    setCategory(Notification.CATEGORY_EVENT)
-    setContentTitle("Test Notification Title")
-    setContentText("test notification text")
-  }
+  private fun sendTestNotification() = notifier.notify(GoogleNotification(
+    title = "Test notification title",
+    text = "Test notification text"
+  ))
 }
