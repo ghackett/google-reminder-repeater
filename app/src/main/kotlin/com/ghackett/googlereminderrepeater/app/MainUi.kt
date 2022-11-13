@@ -13,10 +13,7 @@ import androidx.compose.ui.Modifier
 import com.ghackett.googlereminderrepeater.app.ui.theme.AppScaffold
 
 @Composable fun MainUI(
-  launchNotificationListenerPermissionsScreen: () -> Unit,
-  launchNotificationSettingsScreen: () -> Unit,
-  launchAppDetailsScreen: () -> Unit,
-  sendTestNotification: () -> Unit,
+  launcher: UiActionLauncher,
 ) {
   AppScaffold {
     Column(
@@ -26,16 +23,16 @@ import com.ghackett.googlereminderrepeater.app.ui.theme.AppScaffold
         .fillMaxSize()
         .verticalScroll(rememberScrollState())
     ) {
-      Button(onClick = launchNotificationListenerPermissionsScreen) {
+      Button(onClick = launcher::launchNotificationListenerPermissionsScreen) {
         Text(text = "Notification Listener Permission")
       }
-      Button(onClick = launchNotificationSettingsScreen) {
+      Button(onClick = launcher::launchNotificationSettingsScreen) {
         Text(text = "App Notification Settings")
       }
-      Button(onClick = launchAppDetailsScreen) {
+      Button(onClick = launcher::launchAppDetailsScreen) {
         Text(text = "App Details")
       }
-      Button(onClick = sendTestNotification) {
+      Button(onClick = launcher::sendTestNotification) {
         Text(text = "Send Test Notification")
       }
     }
