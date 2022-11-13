@@ -23,12 +23,6 @@ android {
 }
 
 dependencies {
-  implementation(libs.androidx.core.ktx)
-  implementation(libs.compose.ui.core)
-  implementation(libs.compose.material3.core)
-  implementation(libs.androidx.lifecycle.runtime)
-  implementation(libs.androidx.activity.compose)
-  implementation(libs.hilt.android.core)
-  implementation(libs.accompanist.flowlayout)
+  implementation(libs.bundles.app)
   kapt(libs.hilt.compiler)
 }
