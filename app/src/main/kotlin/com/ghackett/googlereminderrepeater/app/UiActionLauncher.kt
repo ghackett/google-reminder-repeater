@@ -4,7 +4,9 @@ import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.provider.Settings
+import android.provider.Settings.EXTRA_NOTIFICATION_LISTENER_COMPONENT_NAME
 import com.ghackett.googlereminderrepeater.app.notifications.Notifier
 import javax.inject.Inject
 
@@ -14,7 +16,13 @@ class UiActionLauncher @Inject constructor(
 ) {
 
   fun launchNotificationListenerPermissionsScreen() {
-    activity.startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
+    if (Build.VERSION.SDK_INT >= 30) {
+      activity.startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_DETAIL_SETTINGS).apply {
+        putExtra(EXTRA_NOTIFICATION_LISTENER_COMPONENT_NAME, activity.googleReminderListenerServiceComponentName().flattenToString())
+      })
+    } else {
+      activity.startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
+    }
   }
 
   @TargetApi(26)

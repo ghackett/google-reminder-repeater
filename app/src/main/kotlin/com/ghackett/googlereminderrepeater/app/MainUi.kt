@@ -10,8 +10,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.ghackett.googlereminderrepeater.app.ui.theme.AppScaffold
@@ -21,17 +24,23 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 
 @Composable fun MainUI(
+  viewModel: MainActivityViewModel,
   launcher: UiActionLauncher,
 ) {
   AppScaffold {
     Column(modifier = Modifier.fillMaxSize()) {
-      val permissionState = rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
+      val postPermissionState = rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
+      val readPermissionState by viewModel.readPermissionState.collectAsState()
       when {
-        permissionState.status.isGranted.not() -> MissingPermission(
+        postPermissionState.status.isGranted.not() -> MissingPermission(
           "The app is missing the permission to POST notifications.",
-          permissionState::launchPermissionRequest
+          postPermissionState::launchPermissionRequest
         )
-        else                                   -> SetupButtons(launcher = launcher)
+        readPermissionState.not() -> MissingPermission(
+          "The app is missing the permission to READ notifications.",
+          launcher::launchNotificationListenerPermissionsScreen
+        )
+        else                                       -> SetupButtons(launcher = launcher)
       }
     }
   }
@@ -43,11 +52,12 @@ import com.google.accompanist.permissions.rememberPermissionState
       .fillMaxSize()
       .padding(4.dp)
   ) {
-    PillBtn(text = "App Details", onClick = launcher::launchAppDetailsScreen)
+    PillBtn(text = "Notification Listener Permission", onClick = launcher::launchNotificationListenerPermissionsScreen)
     if (Build.VERSION.SDK_INT >= 26) {
       PillBtn(text = "App Notification Settings", onClick = launcher::launchNotificationSettingsScreen)
+    } else {
+      PillBtn(text = "App Details", onClick = launcher::launchAppDetailsScreen)
     }
-    PillBtn(text = "Notification Listener Permission", onClick = launcher::launchNotificationListenerPermissionsScreen)
     PillBtn(text = "Send Test Notification", onClick = launcher::sendTestNotification)
   }
 }
@@ -70,6 +80,7 @@ import com.google.accompanist.permissions.rememberPermissionState
     Text(text = text,
       modifier = Modifier.fillMaxWidth(),
       textAlign = TextAlign.Center)
+    Spacer(modifier = Modifier.height(8.dp))
     PillBtn(text = "Grant permission", onClick = launchPermissionRequest)
   }
 }
