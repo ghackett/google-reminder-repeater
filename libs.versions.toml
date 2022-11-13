@@ -10,6 +10,7 @@ nav-core = "2.5.1"
 kotlinx-serialization = "1.4.1"
 compose-core = "1.3.0-rc01"
 hilt-core = "2.43.2"
+accompanist-core = "0.27.0"
 
 [libraries]
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
@@ -22,6 +23,8 @@ androidx-activity-compose = { module = "androidx.activity:activity-compose", ver
 
 compose-ui-core = { module = "androidx.compose.ui:ui", version.ref = "compose-core" }
 compose-material3-core = { module = "androidx.compose.material3:material3", version = "1.0.0-beta01" }
+
+accompanist-flowlayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanist-core" }
 
 hilt-android-core = { module = "com.google.dagger:hilt-android", version.ref = "hilt-core" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt-core" }

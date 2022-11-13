@@ -29,5 +29,6 @@ dependencies {
   implementation(libs.androidx.lifecycle.runtime)
   implementation(libs.androidx.activity.compose)
   implementation(libs.hilt.android.core)
+  implementation(libs.accompanist.flowlayout)
   kapt(libs.hilt.compiler)
 }
