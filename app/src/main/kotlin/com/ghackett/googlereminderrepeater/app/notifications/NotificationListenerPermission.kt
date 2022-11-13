@@ -22,7 +22,7 @@ enum class NotificationListenerPermission { GRANTED, NOT_GRANTED, UNKNOWN }
     .eventFlow()
     .filter { it == Lifecycle.Event.ON_RESUME }
     .map { context.isNotificationListenerAccessGranted() }
-    .collectAsState(initial = NotificationListenerPermission.NOT_GRANTED)
+    .collectAsState(initial = context.isNotificationListenerAccessGranted())
 }
 
 
