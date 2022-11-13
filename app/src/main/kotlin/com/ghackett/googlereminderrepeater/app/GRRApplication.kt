@@ -12,7 +12,8 @@ import dagger.hilt.components.SingletonComponent
 
 @HiltAndroidApp class GRRApplication : Application()
 
+fun Context.notificationManager(): NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
 @Module @InstallIn(SingletonComponent::class) object ApplicationModule {
-  @Provides fun notificationManager(@ApplicationContext context: Context) =
-    context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+  @Provides fun notificationManager(@ApplicationContext context: Context) = context.notificationManager()
 }
