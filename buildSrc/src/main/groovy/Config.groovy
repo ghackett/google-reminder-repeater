@@ -16,7 +16,7 @@ class Config {
   class Android {
     static int compileSdk = 33
     static int targetSdk = 33
-    static int minSdk = 21
+    static int minSdk = 22
   }
   class Ktx {
     static String[] compilerArgs = []

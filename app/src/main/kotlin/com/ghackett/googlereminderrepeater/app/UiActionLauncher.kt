@@ -1,5 +1,6 @@
 package com.ghackett.googlereminderrepeater.app
 
+import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
@@ -16,6 +17,7 @@ class UiActionLauncher @Inject constructor(
     activity.startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
   }
 
+  @TargetApi(26)
   fun launchNotificationSettingsScreen() {
     activity.startActivity(Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
       putExtra(Settings.EXTRA_APP_PACKAGE, activity.packageName)
