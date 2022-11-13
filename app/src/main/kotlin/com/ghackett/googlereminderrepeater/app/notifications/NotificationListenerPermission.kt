@@ -20,7 +20,7 @@ enum class NotificationListenerPermission { GRANTED, NOT_GRANTED, UNKNOWN }
 @Composable fun notificationListenerPermissionState(): State<NotificationListenerPermission> {
   val context = LocalContext.current
   val lifecycle = LocalLifecycleOwner.current.lifecycle
-  val flow = remember {
+  val flow = remember(context, lifecycle) {
     lifecycle.eventFlow()
       .filter { it == Lifecycle.Event.ON_RESUME }
       .map { context.isNotificationListenerAccessGranted() }
