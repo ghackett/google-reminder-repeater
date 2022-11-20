@@ -11,6 +11,8 @@ kotlinx-serialization = "1.4.1"
 compose-core = "1.3.0-rc01"
 hilt-core = "2.43.2"
 accompanist-core = "0.27.0"
+typed2-core = "2.0.0-alpha01"
+kotlinx-serialization-core = "1.4.0"
 
 [libraries]
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
@@ -30,6 +32,11 @@ accompanist-permissions = { module = "com.google.accompanist:accompanist-permiss
 hilt-android-core = { module = "com.google.dagger:hilt-android", version.ref = "hilt-core" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt-core" }
 
+typed2-core = { module = "com.episode6.typed2:core", version.ref = "typed2-core" }
+typed2-bundlizer = { module = "com.episode6.typed2:kotlinx-serialization-bundlizer", version.ref = "typed2-core" }
+typed2-json = { module = "com.episode6.typed2:kotlinx-serialization-json", version.ref = "typed2-core" }
+kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization-core" }
+
 [bundles]
 app = [
     "androidx-core-ktx",
@@ -41,4 +48,8 @@ app = [
     "hilt-android-core",
     "accompanist-flowlayout",
     "accompanist-permissions",
+    "typed2-core",
+    "typed2-bundlizer",
+    "typed2-json",
+    "kotlinx-serialization-core",
 ]
