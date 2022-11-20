@@ -4,10 +4,14 @@ import android.app.Notification
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
+import androidx.core.content.edit
 import com.episode6.typed2.bundles.BundleKeyNamespace
 import com.episode6.typed2.bundles.getExtra
 import com.episode6.typed2.bundles.setExtra
 import com.episode6.typed2.kotlinx.serialization.bundlizer.bundlized
+import com.episode6.typed2.sharedprefs.get
+import com.episode6.typed2.sharedprefs.set
 import com.ghackett.googlereminderrepeater.app.notifications.GoogleRepeatChannel
 import com.ghackett.googlereminderrepeater.app.notifications.Notifier
 import com.ghackett.googlereminderrepeater.app.services.CoroutineIntentService
@@ -29,10 +33,13 @@ fun Context.repeatGoogleNotification(notification: GoogleNotification) {
 
 @AndroidEntryPoint class GoogleRepeaterService : CoroutineIntentService() {
   @Inject lateinit var notifier: Notifier
+  @Inject lateinit var sharedPrefs: SharedPreferences
 
   override suspend fun handleIntent(intent: Intent?) {
     val notification = intent?.getExtra(Extras.NOTIFICATION) ?: return
+
     notifier.notify(notification)
+    sharedPrefs.appendNotificationToLog(notification)
   }
 }
 
@@ -41,4 +48,11 @@ private fun Notifier.notify(googleNotification: GoogleNotification) = notify(Goo
   setCategory(Notification.CATEGORY_EVENT)
   setContentTitle(googleNotification.title)
   setContentText(googleNotification.text)
+}
+
+private suspend fun SharedPreferences.appendNotificationToLog(notification: GoogleNotification) = edit(commit = true) {
+  set(
+    PrefKeys.GOOGLE_LOG,
+    get(PrefKeys.GOOGLE_LOG).withNewEntry(notification)
+  )
 }
