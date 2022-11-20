@@ -9,7 +9,7 @@ import kotlinx.coroutines.channels.Channel
 
 private data class Command(val id: Int, val intent: Intent?)
 abstract class CoroutineIntentService : Service() {
-  private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+  protected val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
   private val commands = Channel<Command>(capacity = Channel.UNLIMITED)
 
   protected abstract suspend fun handleIntent(intent: Intent?)
