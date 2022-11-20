@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.provider.Settings.EXTRA_NOTIFICATION_LISTENER_COMPONENT_NAME
-import com.ghackett.googlereminderrepeater.app.notifications.Notifier
 import javax.inject.Inject
 
 class UiActionLauncher @Inject constructor(
@@ -39,7 +38,7 @@ class UiActionLauncher @Inject constructor(
   }
 
   fun sendTestNotification() {
-    activity.repeatNotification(GoogleNotification(
+    activity.repeatGoogleNotification(GoogleNotification(
       title = "Test notification title",
       text = "Test notification text"
     ))
