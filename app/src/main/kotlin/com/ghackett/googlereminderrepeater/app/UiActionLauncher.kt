@@ -12,7 +12,6 @@ import javax.inject.Inject
 
 class UiActionLauncher @Inject constructor(
   private val activity: Activity,
-  private val notifier: Notifier,
 ) {
 
   fun launchNotificationListenerPermissionsScreen() {
@@ -39,8 +38,10 @@ class UiActionLauncher @Inject constructor(
     })
   }
 
-  fun sendTestNotification() = notifier.notify(GoogleNotification(
-    title = "Test notification title",
-    text = "Test notification text"
-  ))
+  fun sendTestNotification() {
+    activity.repeatNotification(GoogleNotification(
+      title = "Test notification title",
+      text = "Test notification text"
+    ))
+  }
 }

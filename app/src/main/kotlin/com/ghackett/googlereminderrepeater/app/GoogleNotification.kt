@@ -4,8 +4,15 @@ import android.app.Notification
 import android.service.notification.StatusBarNotification
 import com.ghackett.googlereminderrepeater.app.notifications.GoogleRepeatChannel
 import com.ghackett.googlereminderrepeater.app.notifications.Notifier
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-data class GoogleNotification(val title: String, val text: String)
+@Serializable
+data class GoogleNotification(
+  @SerialName("title") val title: String,
+  @SerialName("text") val text: String,
+  @SerialName("capturedAt") val capturedAt: Long = System.currentTimeMillis()
+)
 
 private const val GOOGLE_PACKAGE = "com.google.android.googlequicksearchbox"
 private const val GOOGLE_REPEATER_NOTIFICATION_ID = 7839

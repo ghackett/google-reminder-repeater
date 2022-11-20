@@ -3,6 +3,7 @@ plugins {
   id("config-android")
   id("config-compose")
   kotlin("kapt")
+  kotlin("plugin.serialization")
   id("com.google.dagger.hilt.android")
 }
 

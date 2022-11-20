@@ -10,14 +10,13 @@ import javax.inject.Inject
 
 fun Context.googleReminderListenerServiceComponentName(): ComponentName = ComponentName(this, GoogleReminderListenerService::class.java)
 
-@AndroidEntryPoint class GoogleReminderListenerService : NotificationListenerService() {
+class GoogleReminderListenerService : NotificationListenerService() {
 
-  @Inject lateinit var notifier: Notifier
 
   override fun onNotificationPosted(sbn: StatusBarNotification?) {
     super.onNotificationPosted(sbn)
 
     val notification = sbn?.findGoogleNotification() ?: return
-    notifier.notify(notification)
+    repeatNotification(notification)
   }
 }

@@ -35,6 +35,8 @@
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
+
+        <service android:name=".GoogleRepeaterService"/>
     </application>
 
 </manifest>
