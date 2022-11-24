@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class GoogleNotificationLog(
-  @SerialName("maxEntryCount") val maxEntryCount: Int = 10,
+  @SerialName("maxEntryCount") val maxEntryCount: Int = 5,
   @SerialName("entries") val entries: List<GoogleNotification> = emptyList()
 )
 
@@ -13,9 +13,12 @@ fun GoogleNotificationLog.withNewEntry(entry: GoogleNotification): GoogleNotific
   entries = (listOf(entry) + entries).trimmed(maxEntryCount)
 )
 
-fun GoogleNotificationLog.withMaxEntryCount(count: Int, trim: Boolean): GoogleNotificationLog = copy(
+fun GoogleNotificationLog.withMaxEntryCount(count: Int): GoogleNotificationLog = copy(
   maxEntryCount = count,
-  entries = if (trim) entries.trimmed(count) else entries
+)
+
+fun GoogleNotificationLog.trimmed(): GoogleNotificationLog = copy(
+  entries = entries.trimmed(maxEntryCount)
 )
 
 private fun List<GoogleNotification>.trimmed(maxEntryCount: Int): List<GoogleNotification> {
