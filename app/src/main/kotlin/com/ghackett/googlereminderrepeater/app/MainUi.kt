@@ -94,11 +94,7 @@ import com.google.accompanist.permissions.rememberPermissionState
 }
 
 @Composable private fun ScreenContent(viewModel: MainActivityViewModel, launcher: UiActionLauncher, unknownListenerPermission: Boolean) {
-  Column(
-    modifier = Modifier
-      .fillMaxSize()
-      .padding(4.dp)
-  ) {
+  Column(modifier = Modifier.fillMaxSize()) {
     if (unknownListenerPermission) UnknownListenerPermissionHeader(launcher)
 
     val log by viewModel.log.collectAsState()
@@ -132,15 +128,18 @@ import com.google.accompanist.permissions.rememberPermissionState
 
 @Composable private fun LogContent(viewModel: MainActivityViewModel, log: LogViewState) {
   val loggingEnabled by viewModel.loggingEnabled.collectAsState()
-  LogSettingsHeader(
-    loggingEnabled = loggingEnabled,
-    maxEntryCount = log.logSize,
-    setLoggingEnabled = viewModel::setLoggingEnabled,
-    setMaxEntries = viewModel::setLogSize,
-    trimLog = viewModel::trimLog,
-    clearLog = viewModel::clearLog,
-  )
   LazyColumn {
+    item {
+      Spacer(modifier = Modifier.height(4.dp))
+      LogSettingsHeader(
+        loggingEnabled = loggingEnabled,
+        maxEntryCount = log.logSize,
+        setLoggingEnabled = viewModel::setLoggingEnabled,
+        setMaxEntries = viewModel::setLogSize,
+        trimLog = viewModel::trimLog,
+        clearLog = viewModel::clearLog,
+      )
+    }
     item { Spacer(modifier = Modifier.height(12.dp)) }
     items(
       items = log.entries,
@@ -158,7 +157,7 @@ import com.google.accompanist.permissions.rememberPermissionState
   trimLog: () -> Unit,
   clearLog: () -> Unit,
 ) {
-  FlowRow(modifier = Modifier.fillMaxWidth(),
+  FlowRow(modifier = Modifier.fillMaxWidth().padding(4.dp),
     crossAxisAlignment = FlowCrossAxisAlignment.Center,
     crossAxisSpacing = 4.dp
   ) {
