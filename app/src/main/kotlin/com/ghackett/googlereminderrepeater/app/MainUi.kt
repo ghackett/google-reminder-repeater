@@ -162,47 +162,62 @@ import com.google.accompanist.permissions.rememberPermissionState
     crossAxisAlignment = FlowCrossAxisAlignment.Center,
     crossAxisSpacing = 4.dp
   ) {
-    Surface(
-      shape = RoundedCornerShape(8.dp),
-      border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-      modifier = Modifier.clickable { setLoggingEnabled(!loggingEnabled) }.height(64.dp),
-      ) {
-      Row(verticalAlignment = Alignment.CenterVertically) {
-        Checkbox(checked = loggingEnabled, onCheckedChange = setLoggingEnabled)
-        Spacer(modifier = Modifier.width(4.dp))
-        Text(text = "Enable Logging")
-        Spacer(modifier = Modifier.width(8.dp))
-      }
-    }
+    LoggingEnabledCheckbox(loggingEnabled = loggingEnabled, setLoggingEnabled = setLoggingEnabled)
     Spacer(modifier = Modifier.width(8.dp))
-    Surface(shape = RoundedCornerShape(8.dp), border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)) {
-      Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 4.dp)) {
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(text = "Notifications to log:")
-        TextField(
-          enabled = loggingEnabled,
-          value = maxEntryCount,
-          onValueChange = setMaxEntries,
-          singleLine = true,
-          maxLines = 1,
-          keyboardOptions = KeyboardOptions(
-            autoCorrect = false,
-            keyboardType = KeyboardType.Number,
-            imeAction = ImeAction.Done
-          ),
-          keyboardActions = KeyboardActions(
-            onDone = {
-              trimLog()
-              defaultKeyboardAction(ImeAction.Done)
-            }
-          ),
-          modifier = Modifier.width(48.dp)
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-      }
-    }
+    LogSizePreference(loggingEnabled = loggingEnabled, maxEntryCount = maxEntryCount, setMaxEntries = setMaxEntries, trimLog = trimLog)
     Spacer(modifier = Modifier.width(8.dp))
     PillBtn(text = "Clear Log", onClick = clearLog)
+  }
+}
+
+@Composable private fun LoggingEnabledCheckbox(loggingEnabled: Boolean, setLoggingEnabled: (Boolean) -> Unit) {
+  Surface(
+    shape = RoundedCornerShape(8.dp),
+    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+    modifier = Modifier
+      .clickable { setLoggingEnabled(!loggingEnabled) }
+      .height(64.dp),
+  ) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+      Checkbox(checked = loggingEnabled, onCheckedChange = setLoggingEnabled)
+      Spacer(modifier = Modifier.width(4.dp))
+      Text(text = "Enable Logging")
+      Spacer(modifier = Modifier.width(8.dp))
+    }
+  }
+}
+
+@Composable private fun LogSizePreference(
+  loggingEnabled: Boolean,
+  maxEntryCount: String,
+  setMaxEntries: (String) -> Unit,
+  trimLog: () -> Unit,
+) {
+  Surface(shape = RoundedCornerShape(8.dp), border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)) {
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 4.dp)) {
+      Spacer(modifier = Modifier.width(8.dp))
+      Text(text = "Notifications to log:")
+      TextField(
+        enabled = loggingEnabled,
+        value = maxEntryCount,
+        onValueChange = setMaxEntries,
+        singleLine = true,
+        maxLines = 1,
+        keyboardOptions = KeyboardOptions(
+          autoCorrect = false,
+          keyboardType = KeyboardType.Number,
+          imeAction = ImeAction.Done
+        ),
+        keyboardActions = KeyboardActions(
+          onDone = {
+            trimLog()
+            defaultKeyboardAction(ImeAction.Done)
+          }
+        ),
+        modifier = Modifier.width(48.dp)
+      )
+      Spacer(modifier = Modifier.width(8.dp))
+    }
   }
 }
 
