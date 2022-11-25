@@ -4,6 +4,7 @@ package com.ghackett.googlereminderrepeater.app
 
 import android.Manifest
 import android.os.Build
+import android.text.format.DateFormat
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -31,7 +32,9 @@ import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import java.util.*
 import kotlin.math.roundToInt
+
 
 @Composable fun MainUI(
   viewModel: MainActivityViewModel,
@@ -205,7 +208,7 @@ import kotlin.math.roundToInt
       Row(modifier = Modifier.fillMaxWidth()) {
         Text(text = item.text, style = MaterialTheme.typography.bodyMedium)
         Spacer(modifier = Modifier.weight(1f))
-        Text(text = item.capturedAt.toString(), style = MaterialTheme.typography.labelMedium)
+        Text(text = rememberTimeString(timestamp = item.capturedAt), style = MaterialTheme.typography.labelMedium)
       }
     }
   }
@@ -216,4 +219,9 @@ import kotlin.math.roundToInt
   Button(onClick = onClick, modifier = Modifier.padding(horizontal = 4.dp)) {
     Text(text = text)
   }
+}
+
+@Composable private fun rememberTimeString(timestamp: Long): String = remember(timestamp) {
+  val cal = Calendar.getInstance(Locale.ENGLISH).apply { timeInMillis = timestamp }
+  DateFormat.format("MM/dd/yyyy hh:mm a", cal).toString()
 }
