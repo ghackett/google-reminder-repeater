@@ -86,17 +86,8 @@ import com.google.accompanist.permissions.rememberPermissionState
       .fillMaxSize()
       .padding(4.dp)
   ) {
-    if (unknownListenerPermission) {
-      Text(text = "Unable to detect Notification Listener Permission. Make sure Google Reminder Repeater is granted notification access.")
-      Spacer(modifier = Modifier.height(4.dp))
-      PillBtn(text = "Notification Listener Permission", onClick = launcher::launchNotificationListenerPermissionsScreen)
-    }
-  }
-}
+    if (unknownListenerPermission) UnknownListenerPermissionHeader(launcher)
 
-@Composable private fun PillBtn(text: String, onClick: () -> Unit) {
-  Button(onClick = onClick, modifier = Modifier.padding(horizontal = 4.dp)) {
-    Text(text = text)
   }
 }
 
@@ -117,3 +108,15 @@ import com.google.accompanist.permissions.rememberPermissionState
   }
 }
 
+
+@Composable private fun UnknownListenerPermissionHeader(launcher: UiActionLauncher) {
+  Text(text = "Unable to detect Notification Listener Permission. Make sure Google Reminder Repeater is granted notification access.")
+  Spacer(modifier = Modifier.height(4.dp))
+  PillBtn(text = "Notification Listener Permission", onClick = launcher::launchNotificationListenerPermissionsScreen)
+}
+
+@Composable private fun PillBtn(text: String, onClick: () -> Unit) {
+  Button(onClick = onClick, modifier = Modifier.padding(horizontal = 4.dp)) {
+    Text(text = text)
+  }
+}
