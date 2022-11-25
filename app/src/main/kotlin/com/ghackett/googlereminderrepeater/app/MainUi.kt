@@ -1,11 +1,17 @@
-@file:OptIn(ExperimentalPermissionsApi::class)
+@file:OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 
 package com.ghackett.googlereminderrepeater.app
 
 import android.Manifest
 import android.os.Build
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -13,14 +19,19 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.ghackett.googlereminderrepeater.app.notifications.NotificationListenerPermission
 import com.ghackett.googlereminderrepeater.app.notifications.notificationListenerPermissionState
 import com.ghackett.googlereminderrepeater.app.ui.theme.AppScaffold
+import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
+import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import kotlin.math.roundToInt
 
 @Composable fun MainUI(
   viewModel: MainActivityViewModel,
@@ -40,6 +51,7 @@ import com.google.accompanist.permissions.rememberPermissionState
     )
     else                                                              -> AppScaffold(actions = { HamburgerMenu(launcher) }) {
       ScreenContent(
+        viewModel = viewModel,
         launcher = launcher,
         unknownListenerPermission = readPermissionState == NotificationListenerPermission.UNKNOWN,
       )
@@ -80,7 +92,7 @@ import com.google.accompanist.permissions.rememberPermissionState
   }
 }
 
-@Composable private fun ScreenContent(launcher: UiActionLauncher, unknownListenerPermission: Boolean) {
+@Composable private fun ScreenContent(viewModel: MainActivityViewModel, launcher: UiActionLauncher, unknownListenerPermission: Boolean) {
   Column(
     modifier = Modifier
       .fillMaxSize()
@@ -88,6 +100,8 @@ import com.google.accompanist.permissions.rememberPermissionState
   ) {
     if (unknownListenerPermission) UnknownListenerPermissionHeader(launcher)
 
+    val log by viewModel.log.collectAsState()
+    log?.let { LogContent(viewModel = viewModel, log = it) }
   }
 }
 
@@ -105,14 +119,97 @@ import com.google.accompanist.permissions.rememberPermissionState
       textAlign = TextAlign.Center)
     Spacer(modifier = Modifier.height(8.dp))
     PillBtn(text = "Grant permission", onClick = launchPermissionRequest)
+    Spacer(modifier = Modifier.height(8.dp))
   }
 }
-
 
 @Composable private fun UnknownListenerPermissionHeader(launcher: UiActionLauncher) {
   Text(text = "Unable to detect Notification Listener Permission. Make sure Google Reminder Repeater is granted notification access.")
   Spacer(modifier = Modifier.height(4.dp))
   PillBtn(text = "Notification Listener Permission", onClick = launcher::launchNotificationListenerPermissionsScreen)
+}
+
+@Composable private fun LogContent(viewModel: MainActivityViewModel, log: GoogleNotificationLog) {
+  val loggingEnabled by viewModel.loggingEnabled.collectAsState()
+  LogSettingsHeader(
+    loggingEnabled = loggingEnabled,
+    maxEntryCount = log.maxEntryCount,
+    setLoggingEnabled = viewModel::setLoggingEnabled,
+    setMaxEntries = viewModel::setLogSize,
+    trimLog = viewModel::trimLog,
+    clearLog = viewModel::clearLog,
+  )
+  LazyColumn {
+    item { Spacer(modifier = Modifier.height(12.dp)) }
+    items(
+      items = log.entries,
+      key = { it.capturedAt },
+      itemContent = { LogItem(item = it) }
+    )
+  }
+}
+
+@Composable private fun LogSettingsHeader(
+  loggingEnabled: Boolean,
+  maxEntryCount: Int,
+  setLoggingEnabled: (Boolean) -> Unit,
+  setMaxEntries: (Int) -> Unit,
+  trimLog: () -> Unit,
+  clearLog: () -> Unit,
+) {
+  FlowRow(modifier = Modifier.fillMaxWidth(),
+    crossAxisAlignment = FlowCrossAxisAlignment.Center
+  ) {
+    Row(
+      verticalAlignment = Alignment.CenterVertically,
+      modifier = Modifier.clickable { setLoggingEnabled(!loggingEnabled) }) {
+      Checkbox(checked = loggingEnabled, onCheckedChange = setLoggingEnabled)
+      Spacer(modifier = Modifier.width(4.dp))
+      Text(text = "Enable Logging")
+    }
+    Spacer(modifier = Modifier.width(8.dp))
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 4.dp)) {
+      Text(text = "Notifications to log:")
+      TextField(
+        enabled = loggingEnabled,
+        value = if (maxEntryCount == 0) "" else "$maxEntryCount",
+        onValueChange = { setMaxEntries(it.toFloatOrNull()?.roundToInt() ?: 0) },
+        singleLine = true,
+        maxLines = 1,
+        keyboardOptions = KeyboardOptions(
+          autoCorrect = false,
+          keyboardType = KeyboardType.Number,
+          imeAction = ImeAction.Done
+        ),
+        keyboardActions = KeyboardActions(
+          onDone = {
+            trimLog()
+            defaultKeyboardAction(ImeAction.Done)
+          }
+        ),
+        modifier = Modifier.width(64.dp)
+      )
+    }
+    Spacer(modifier = Modifier.width(8.dp))
+    PillBtn(text = "Clear Log", onClick = clearLog)
+  }
+}
+
+@Composable private fun LogItem(item: GoogleNotification) = Column(modifier = Modifier.padding(horizontal = 8.dp)) {
+  Surface(shadowElevation = 8.dp, shape = RoundedCornerShape(8.dp)) {
+    Column(modifier = Modifier
+      .fillMaxWidth()
+      .padding(8.dp)) {
+      Text(text = item.title, style = MaterialTheme.typography.bodyLarge)
+      Spacer(modifier = Modifier.height(8.dp))
+      Row(modifier = Modifier.fillMaxWidth()) {
+        Text(text = item.text, style = MaterialTheme.typography.bodyMedium)
+        Spacer(modifier = Modifier.weight(1f))
+        Text(text = item.capturedAt.toString(), style = MaterialTheme.typography.labelMedium)
+      }
+    }
+  }
+  Spacer(modifier = Modifier.height(12.dp))
 }
 
 @Composable private fun PillBtn(text: String, onClick: () -> Unit) {

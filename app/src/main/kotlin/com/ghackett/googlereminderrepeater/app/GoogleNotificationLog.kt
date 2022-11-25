@@ -21,6 +21,8 @@ fun GoogleNotificationLog.trimmed(): GoogleNotificationLog = copy(
   entries = entries.trimmed(maxEntryCount)
 )
 
+fun GoogleNotificationLog.cleared(): GoogleNotificationLog = copy(entries = emptyList())
+
 private fun List<GoogleNotification>.trimmed(maxEntryCount: Int): List<GoogleNotification> {
   val size = size
   if (maxEntryCount >= size) return this
