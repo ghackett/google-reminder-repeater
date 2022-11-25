@@ -44,7 +44,7 @@ import kotlin.math.roundToInt
   val readPermissionState by notificationListenerPermissionState()
 
   when {
-    postPermissionState.status.isGranted.not()                        -> MissingPermissionScreen(
+    Build.VERSION.SDK_INT >= 33 && postPermissionState.status.isGranted.not()                        -> MissingPermissionScreen(
       "The app is missing the permission to POST notifications.",
       postPermissionState::launchPermissionRequest
     )
