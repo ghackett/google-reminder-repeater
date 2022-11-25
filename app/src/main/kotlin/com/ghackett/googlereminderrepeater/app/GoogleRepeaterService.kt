@@ -9,6 +9,7 @@ import com.episode6.typed2.bundles.BundleKeyNamespace
 import com.episode6.typed2.bundles.getExtra
 import com.episode6.typed2.bundles.setExtra
 import com.episode6.typed2.kotlinx.serialization.bundlizer.bundlized
+import com.episode6.typed2.sharedprefs.get
 import com.episode6.typed2.sharedprefs.update
 import com.ghackett.googlereminderrepeater.app.notifications.GoogleRepeatChannel
 import com.ghackett.googlereminderrepeater.app.notifications.Notifier
@@ -37,7 +38,9 @@ fun Context.repeatGoogleNotification(notification: GoogleNotification) {
     val notification = intent?.getExtra(Extras.NOTIFICATION) ?: return
 
     notifier.notify(notification)
-    sharedPrefs.update(PrefKeys.GOOGLE_LOG, commit = true) { it.withNewEntry(notification) }
+    if (sharedPrefs.get(PrefKeys.LOGGING_ENABLED)) {
+      sharedPrefs.update(PrefKeys.GOOGLE_LOG, commit = true) { it.withNewEntry(notification) }
+    }
   }
 }
 
