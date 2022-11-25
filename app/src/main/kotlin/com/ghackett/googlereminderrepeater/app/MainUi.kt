@@ -4,7 +4,7 @@ package com.ghackett.googlereminderrepeater.app
 
 import android.Manifest
 import android.os.Build
-import android.text.format.DateFormat
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -32,8 +32,6 @@ import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import java.util.*
-import kotlin.math.roundToInt
 
 
 @Composable fun MainUI(
@@ -132,11 +130,11 @@ import kotlin.math.roundToInt
   PillBtn(text = "Notification Listener Permission", onClick = launcher::launchNotificationListenerPermissionsScreen)
 }
 
-@Composable private fun LogContent(viewModel: MainActivityViewModel, log: GoogleNotificationLog) {
+@Composable private fun LogContent(viewModel: MainActivityViewModel, log: LogViewState) {
   val loggingEnabled by viewModel.loggingEnabled.collectAsState()
   LogSettingsHeader(
     loggingEnabled = loggingEnabled,
-    maxEntryCount = log.maxEntryCount,
+    maxEntryCount = log.logSize,
     setLoggingEnabled = viewModel::setLoggingEnabled,
     setMaxEntries = viewModel::setLogSize,
     trimLog = viewModel::trimLog,
@@ -146,7 +144,7 @@ import kotlin.math.roundToInt
     item { Spacer(modifier = Modifier.height(12.dp)) }
     items(
       items = log.entries,
-      key = { it.capturedAt },
+      key = { it.notification.capturedAt },
       itemContent = { LogItem(item = it) }
     )
   }
@@ -154,61 +152,71 @@ import kotlin.math.roundToInt
 
 @Composable private fun LogSettingsHeader(
   loggingEnabled: Boolean,
-  maxEntryCount: Int,
+  maxEntryCount: String,
   setLoggingEnabled: (Boolean) -> Unit,
-  setMaxEntries: (Int) -> Unit,
+  setMaxEntries: (String) -> Unit,
   trimLog: () -> Unit,
   clearLog: () -> Unit,
 ) {
   FlowRow(modifier = Modifier.fillMaxWidth(),
-    crossAxisAlignment = FlowCrossAxisAlignment.Center
+    crossAxisAlignment = FlowCrossAxisAlignment.Center,
+    crossAxisSpacing = 4.dp
   ) {
-    Row(
-      verticalAlignment = Alignment.CenterVertically,
-      modifier = Modifier.clickable { setLoggingEnabled(!loggingEnabled) }) {
-      Checkbox(checked = loggingEnabled, onCheckedChange = setLoggingEnabled)
-      Spacer(modifier = Modifier.width(4.dp))
-      Text(text = "Enable Logging")
+    Surface(
+      shape = RoundedCornerShape(8.dp),
+      border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+      modifier = Modifier.clickable { setLoggingEnabled(!loggingEnabled) }.height(64.dp),
+      ) {
+      Row(verticalAlignment = Alignment.CenterVertically) {
+        Checkbox(checked = loggingEnabled, onCheckedChange = setLoggingEnabled)
+        Spacer(modifier = Modifier.width(4.dp))
+        Text(text = "Enable Logging")
+        Spacer(modifier = Modifier.width(8.dp))
+      }
     }
     Spacer(modifier = Modifier.width(8.dp))
-    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 4.dp)) {
-      Text(text = "Notifications to log:")
-      TextField(
-        enabled = loggingEnabled,
-        value = if (maxEntryCount == 0) "" else "$maxEntryCount",
-        onValueChange = { setMaxEntries(it.toFloatOrNull()?.roundToInt() ?: 0) },
-        singleLine = true,
-        maxLines = 1,
-        keyboardOptions = KeyboardOptions(
-          autoCorrect = false,
-          keyboardType = KeyboardType.Number,
-          imeAction = ImeAction.Done
-        ),
-        keyboardActions = KeyboardActions(
-          onDone = {
-            trimLog()
-            defaultKeyboardAction(ImeAction.Done)
-          }
-        ),
-        modifier = Modifier.width(64.dp)
-      )
+    Surface(shape = RoundedCornerShape(8.dp), border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)) {
+      Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 4.dp)) {
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(text = "Notifications to log:")
+        TextField(
+          enabled = loggingEnabled,
+          value = maxEntryCount,
+          onValueChange = setMaxEntries,
+          singleLine = true,
+          maxLines = 1,
+          keyboardOptions = KeyboardOptions(
+            autoCorrect = false,
+            keyboardType = KeyboardType.Number,
+            imeAction = ImeAction.Done
+          ),
+          keyboardActions = KeyboardActions(
+            onDone = {
+              trimLog()
+              defaultKeyboardAction(ImeAction.Done)
+            }
+          ),
+          modifier = Modifier.width(48.dp)
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+      }
     }
     Spacer(modifier = Modifier.width(8.dp))
     PillBtn(text = "Clear Log", onClick = clearLog)
   }
 }
 
-@Composable private fun LogItem(item: GoogleNotification) = Column(modifier = Modifier.padding(horizontal = 8.dp)) {
+@Composable private fun LogItem(item: LogEntryViewState) = Column(modifier = Modifier.padding(horizontal = 8.dp)) {
   Surface(shadowElevation = 8.dp, shape = RoundedCornerShape(8.dp)) {
     Column(modifier = Modifier
       .fillMaxWidth()
       .padding(8.dp)) {
-      Text(text = item.title, style = MaterialTheme.typography.bodyLarge)
+      Text(text = item.notification.title, style = MaterialTheme.typography.bodyLarge)
       Spacer(modifier = Modifier.height(8.dp))
       Row(modifier = Modifier.fillMaxWidth()) {
-        Text(text = item.text, style = MaterialTheme.typography.bodyMedium)
+        Text(text = item.notification.text, style = MaterialTheme.typography.bodyMedium)
         Spacer(modifier = Modifier.weight(1f))
-        Text(text = rememberTimeString(timestamp = item.capturedAt), style = MaterialTheme.typography.labelMedium)
+        Text(text = item.timestamp, style = MaterialTheme.typography.labelMedium)
       }
     }
   }
@@ -221,7 +229,3 @@ import kotlin.math.roundToInt
   }
 }
 
-@Composable private fun rememberTimeString(timestamp: Long): String = remember(timestamp) {
-  val cal = Calendar.getInstance(Locale.ENGLISH).apply { timeInMillis = timestamp }
-  DateFormat.format("MM/dd/yyyy hh:mm a", cal).toString()
-}
