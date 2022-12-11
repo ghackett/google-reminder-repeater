@@ -1,4 +1,4 @@
-name: Build and Check
+name: Publish Release
 on:
   push:
     branches:
@@ -41,6 +41,6 @@ jobs:
 
       - name: Release
         uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844
-#        if: ${{ github.ref_type == 'tag' && github.repository == 'ghackett/google-reminder-repeater' }}
+        #        if: ${{ github.ref_type == 'tag' && github.repository == 'ghackett/google-reminder-repeater' }}
         with:
           files: app/build/outputs/apk/release/app-release.apk
