@@ -28,5 +28,9 @@ gradlePlugin {
       id = "config-compose"
       implementationClass = "plugins.ConfigureAndroidComposePlugin"
     }
+    create("ConfigureAndroidAppPlugin") {
+      id = "config-android-app"
+      implementationClass = "plugins.ConfigureAndroidAppPlugin"
+    }
   }
 }
