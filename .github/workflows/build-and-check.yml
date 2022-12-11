@@ -28,6 +28,7 @@ jobs:
         with:
           name: build-outputs
           path: app/build/outputs/
+          retention-days: 7
       - name: Check Project
         run: ./gradlew check
 #
