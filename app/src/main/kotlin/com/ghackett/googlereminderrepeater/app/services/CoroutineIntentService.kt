@@ -20,7 +20,9 @@ abstract class CoroutineIntentService : Service() {
       try {
         for (command in commands) {
           handleIntent(command.intent)
-          stopSelf(command.id)
+          withContext(Dispatchers.Main) {
+            stopSelf(command.id)
+          }
         }
       } finally {
         commands.close()
