@@ -11,7 +11,7 @@ android {
   defaultConfig {
     applicationId = "com.ghackett.googlereminderrepeater.app"
     versionCode = 1
-    versionName = "1.0"
+    versionName = "1.0.0-rc1"
   }
 
   buildTypes {
