@@ -27,7 +27,7 @@ jobs:
         run: |
           echo $ENCODED_STRING | base64 -d > keystore.jks
 
-      - name: Assemble Project
+      - name: Assemble Release
         run: ./gradlew clean assembleRelease
         env:
           ORG_GRADLE_PROJECT_androidSigningKeyPassword: ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }}
@@ -36,7 +36,7 @@ jobs:
         if: ${{ always() }}
         run: rm -f keystore.jks
 
-      - name: Release
+      - name: Publish Release
         uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844
         #        if: ${{ github.ref_type == 'tag' && github.repository == 'ghackett/google-reminder-repeater' }}
         with:
