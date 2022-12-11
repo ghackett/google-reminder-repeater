@@ -1,11 +1,8 @@
 name: Publish Release
 on:
   push:
-    branches:
-      - main
     tags:
       - '**'
-  pull_request:
 env:
   GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
 jobs:
@@ -38,6 +35,6 @@ jobs:
 
       - name: Publish Release
         uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844
-        #        if: ${{ github.ref_type == 'tag' && github.repository == 'ghackett/google-reminder-repeater' }}
+        if: ${{ github.ref_type == 'tag' && github.repository == 'ghackett/google-reminder-repeater' }}
         with:
           files: app/build/outputs/apk/release/app-release.apk
