@@ -27,7 +27,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: build-outputs
-          path: build/outputs/
+          path: app/build/outputs/
       - name: Check Project
         run: ./gradlew check
 #
