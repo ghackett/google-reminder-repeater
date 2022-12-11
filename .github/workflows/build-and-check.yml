@@ -27,7 +27,7 @@ jobs:
         env:
           ENCODED_STRING: ${{ secrets.ANDROID_SIGNING_KEY }}
         run: |
-          echo $ENCODED_STRING | base64 -di > keystore.jks
+          echo $ENCODED_STRING | base64 -d > keystore.jks
 
       - name: Assemble Project
         run: ./gradlew assemble
