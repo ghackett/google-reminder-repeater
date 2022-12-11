@@ -1,10 +1,8 @@
-name: Build and Check
+name: Publish Release
 on:
   push:
-    branches:
-      - main
-      - 'release/**'
-  pull_request:
+    tags:
+      - '**'
 env:
   GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
 jobs:
@@ -26,8 +24,8 @@ jobs:
         run: |
           echo $ENCODED_STRING | base64 -d > keystore.jks
 
-      - name: Assemble Project
-        run: ./gradlew assemble
+      - name: Assemble Release
+        run: ./gradlew clean assembleRelease
         env:
           ORG_GRADLE_PROJECT_androidSigningKeyPassword: ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }}
 
@@ -35,13 +33,11 @@ jobs:
         if: ${{ always() }}
         run: rm -f keystore.jks
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v3
+      - name: Publish Release
+        uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844
+        if: ${{ github.ref_type == 'tag' && github.repository == 'ghackett/google-reminder-repeater' }}
         with:
-          name: build-outputs
-          path: app/build/outputs/
-          retention-days: 7
-
-      - name: Check Project
-        run: ./gradlew check
-
+          body_path: CHANGELOG.md
+          files: |
+            app/build/outputs/apk/release/app-release.apk
+            LICENSE
