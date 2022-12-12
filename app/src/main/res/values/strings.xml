@@ -2,4 +2,7 @@
     <string name="app_name">Google Reminder Repeater</string>
     <string name="go_back">Go Back</string>
     <string name="service_name">Google Reminder Repeater Service</string>
+
+    <string name="notification_channel_name">Google Repeater Notification</string>
+    <string name="notification_channel_description">Repeated notifications from the google app</string>
 </resources>
