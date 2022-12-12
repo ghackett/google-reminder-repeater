@@ -1,4 +1,4 @@
-# Google Reminder Repeater Changelog
+## Changelog
 
 ### v1.0.0 - Unreleased
 
