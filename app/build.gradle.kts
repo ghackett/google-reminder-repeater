@@ -10,7 +10,7 @@ android {
   namespace = "com.ghackett.googlereminderrepeater.app"
   defaultConfig {
     applicationId = "com.ghackett.googlereminderrepeater.app"
-    versionCode = 2
+    versionCode = 4
     versionName = "1.0.0-SNAPSHOT"
   }
 
