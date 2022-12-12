@@ -16,7 +16,7 @@ class Notifier @Inject constructor(
 
   fun notify(channel: NotificationChannelInfo, id: Int, action: NotificationCompat.Builder.(Resources) -> Unit) {
     notificationManager.run {
-      prep(channel)
+      prepChannel(channel)
       notify(
         id,
         NotificationCompat.Builder(appContext, channel.id)
@@ -25,15 +25,19 @@ class Notifier @Inject constructor(
       )
     }
   }
-}
 
-private fun NotificationManager.prep(channel: NotificationChannelInfo) {
-  if (Build.VERSION.SDK_INT < 26) return
-  if (getNotificationChannel(channel.id) == null) {
-    createNotificationChannel(
-      NotificationChannel(channel.id, channel.name, channel.importance).apply {
-        description = channel.description
-      }
-    )
+  private fun prepChannel(channel: NotificationChannelInfo) {
+    if (Build.VERSION.SDK_INT < 26) return
+    if (notificationManager.getNotificationChannel(channel.id) == null) {
+      notificationManager.createNotificationChannel(
+        NotificationChannel(
+          channel.id,
+          appContext.getString(channel.name),
+          channel.importance
+        ).apply {
+          description = appContext.getString(channel.description)
+        }
+      )
+    }
   }
 }
